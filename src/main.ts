@@ -11,11 +11,11 @@ async function bootstrap() {
 
   app.use(helmet());
 
-  app.enableCors({
-    origin: ['http://localhost:5173'],
-    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
-    credentials: true,
-  });
+  // app.enableCors({
+  //   origin: ['http://localhost:5173'],
+  //   methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+  //   credentials: true,
+  // });
 
   app.setGlobalPrefix('api');
 
