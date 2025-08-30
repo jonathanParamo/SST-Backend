@@ -6,6 +6,10 @@ import { DbModule } from './database/database.module';
 import { MongooseModule } from '@nestjs/mongoose';
 import { UsersModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';
+import { EventsModule } from './events/events.module';
+import { MessagesModule } from './messages/messages.module';
+import { PassportModule } from '@nestjs/passport';
+import { LocalStrategy } from './auth/local.strategy';
 
 @Module({
   imports: [
@@ -18,8 +22,11 @@ import { AuthModule } from './auth/auth.module';
     DbModule,
     UsersModule,
     AuthModule,
+    EventsModule,
+    MessagesModule,
+    PassportModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService, LocalStrategy],
 })
 export class AppModule {}

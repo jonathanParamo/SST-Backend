@@ -26,7 +26,10 @@ export class AuthService {
       );
     }
 
-    return user;
+    const { password: _, ...result } = (user as any).toObject
+      ? (user as any).toObject()
+      : user;
+    return result;
   }
 
   async login(user: any) {
