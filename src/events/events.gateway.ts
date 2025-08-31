@@ -7,17 +7,20 @@ import {
   OnGatewayConnection,
   OnGatewayDisconnect,
 } from '@nestjs/websockets';
+import { Logger } from '@nestjs/common';
 import { Server, Socket } from 'socket.io';
 import * as jwt from 'jsonwebtoken';
 
 @WebSocketGateway({
   cors: {
-    origin: '*', // tu frontend
+    origin: '*', // frontend
   },
 })
 export class EventsGateway implements OnGatewayConnection, OnGatewayDisconnect {
   @WebSocketServer()
   server: Server;
+
+  private readonly logger = new Logger(EventsGateway.name);
 
   async handleConnection(client: Socket) {
     try {
@@ -25,7 +28,7 @@ export class EventsGateway implements OnGatewayConnection, OnGatewayDisconnect {
         client.handshake.auth?.token || client.handshake.headers?.authorization;
 
       if (!token) {
-        console.log('Cliente rechazado: no envió token');
+        this.logger.warn(`❌ Cliente rechazado (sin token) - ID: ${client.id}`);
         client.disconnect();
         return;
       }
@@ -34,19 +37,20 @@ export class EventsGateway implements OnGatewayConnection, OnGatewayDisconnect {
         token,
         process.env.JWT_SECRET || 'mi_super_clave_secreta',
       );
-      console.log(
-        `Cliente conectado: ${client.id} - UserID: ${decoded['sub']}`,
+
+      this.logger.log(
+        `✅ Cliente conectado: ${client.id} - UserID: ${decoded['sub']}`,
       );
 
       (client as any).user = decoded;
     } catch (err) {
-      console.log('Token inválido, desconectando...');
+      this.logger.error(`⚠️ Token inválido para cliente: ${client.id}`);
       client.disconnect();
     }
   }
 
   handleDisconnect(client: Socket) {
-    console.log(`Cliente desconectado: ${client.id}`);
+    this.logger.log(`🔌 Cliente desconectado: ${client.id}`);
   }
 
   @SubscribeMessage('message')
@@ -55,7 +59,7 @@ export class EventsGateway implements OnGatewayConnection, OnGatewayDisconnect {
     @ConnectedSocket() client: Socket,
   ) {
     const user = (client as any).user;
-    console.log(`Mensaje de ${user?.sub || 'desconocido'}: ${data}`);
+    this.logger.debug(`📩 Mensaje de ${user?.sub || 'desconocido'}: ${data}`);
 
     // mandar a uno:
     client.emit('messageResponse', `Servidor recibió: ${data}`);

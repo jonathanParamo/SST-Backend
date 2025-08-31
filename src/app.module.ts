@@ -10,6 +10,7 @@ import { EventsModule } from './events/events.module';
 import { MessagesModule } from './messages/messages.module';
 import { PassportModule } from '@nestjs/passport';
 import { LocalStrategy } from './auth/local.strategy';
+import { ReportsModule } from './reports/reports.module';
 
 @Module({
   imports: [
@@ -25,6 +26,7 @@ import { LocalStrategy } from './auth/local.strategy';
     EventsModule,
     MessagesModule,
     PassportModule,
+    ReportsModule,
   ],
   controllers: [AppController],
   providers: [AppService, LocalStrategy],

@@ -16,7 +16,17 @@ export class User {
 
   @Prop({
     required: true,
-    enum: ['admin', 'siso', 'ingeniero', 'obrero'],
+    enum: [
+      'admin',
+      'siso',
+      'ingeniero',
+      'obrero',
+      'supervisor',
+      'contratista',
+      'auditor',
+      'visitante',
+      'talento humano',
+    ],
     default: 'obrero',
   })
   role: string;

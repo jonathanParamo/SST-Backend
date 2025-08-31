@@ -40,6 +40,12 @@ export class UsersService {
     return user;
   }
 
+  async findById(userId: string): Promise<User> {
+    const user = await this.userModel.findById(userId);
+    if (!user) throw new NotFoundException('Usuario no encontrado');
+    return user;
+  }
+
   async remove(id: string): Promise<User> {
     const user = await this.userModel.findByIdAndDelete(id).exec();
     if (!user) throw new NotFoundException(`User with ID ${id} not found`);
